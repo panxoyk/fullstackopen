@@ -5,12 +5,15 @@ import PersonService from './services/persons';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Notification from './components/Notification';
 
 const App = () => {
 	const [ persons, setPersons ] = useState([])
 	const [ newName, setNewName ] = useState('')
 	const [ newNumber, setNewNumber ] = useState('')
 	const [ filter, setFilter ] = useState('')
+	const [ alertMessage, setAlertMessage ] = useState(null)
+	const [ errorMessage, setErrorMessage ] = useState(null)
 
 	useEffect(() => {
 		PersonService.getAll()
@@ -31,10 +34,20 @@ const App = () => {
 
 				PersonService.update(person.id, changedPerson)
 					.then(returnedPerson => {
-						setPersons(persons.map(person => person.name !== newName ? person : returnedPerson))
+						setPersons(persons.map(person => person.name !== newName ? person : returnedPerson))						
+						setNewNumber('')
+						setAlertMessage(`${newName} successfully updated`)
+						setTimeout(() => {
+							setAlertMessage(null)
+						}, 3000)
 					})
-				
-				setNewNumber('')
+					.catch(error => {
+						setErrorMessage(`${person.name} was already removed from numbers`)
+						setTimeout(() => {
+							setErrorMessage(null)
+						}, 100000)
+						setPersons(persons.filter(person => person.id !== changedPerson.id))
+					})	
 			}
 			setNewName('')
 		} else {
@@ -47,17 +60,32 @@ const App = () => {
 					setPersons(persons.concat(returnedPerson))
 					setNewName('')
 					setNewNumber('')
-				})		
+					setAlertMessage(`${newName} successfully added to phonebook`)
+					setTimeout(() => {
+						setAlertMessage(null)
+					}, 100000)
+				})	
 		}		
 	}
 
 	const removePerson = (id) => {
 		const person = persons.find(person => person.id === id)
-		if (window.confirm(`Delete ${person.name}?`)) {
+		if (window.confirm(`Remove ${person.name}?`)) {
 			PersonService.remove(id)
 			PersonService.getAll()
 				.then(initialPersons => {
 					setPersons(initialPersons)
+					setErrorMessage(`${person.name} removed from the phonebook`)
+					setTimeout(() => {
+						setErrorMessage(null)
+					}, 100000)
+				})
+				.catch(error => {
+					setErrorMessage(`${person.name} was already removed from numbers`)
+					setTimeout(() => {
+						setErrorMessage(null)
+					}, 100000)
+					setPersons(persons.filter(person => person.id !== id))
 				})
 		}
 	}
@@ -76,7 +104,8 @@ const App = () => {
 
 	return (
 		<div>
-			<h1> Phonebook </h1>	
+			<h1> Phonebook </h1>
+			<Notification error={errorMessage} alert={alertMessage} />	
 			<Filter value={filter} onChange={handleFilter} />
 			<h2> Add a new person </h2>
 			<PersonForm 
