@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'https://persons-fco.onrender.com/api/persons'
+const baseUrl = '/api/persons'
 
 const getAll = async () => {
     const request = axios.get(baseUrl)
