@@ -45,7 +45,7 @@ const App = () => {
 						setErrorMessage(`${person.name} was already removed from numbers`)
 						setTimeout(() => {
 							setErrorMessage(null)
-						}, 100000)
+						}, 3000)
 						setPersons(persons.filter(person => person.id !== changedPerson.id))
 					})	
 			}
@@ -63,7 +63,7 @@ const App = () => {
 					setAlertMessage(`${newName} successfully added to phonebook`)
 					setTimeout(() => {
 						setAlertMessage(null)
-					}, 100000)
+					}, 3000)
 				})	
 		}		
 	}
@@ -78,13 +78,13 @@ const App = () => {
 					setErrorMessage(`${person.name} removed from the phonebook`)
 					setTimeout(() => {
 						setErrorMessage(null)
-					}, 100000)
+					}, 3000)
 				})
 				.catch(error => {
 					setErrorMessage(`${person.name} was already removed from numbers`)
 					setTimeout(() => {
 						setErrorMessage(null)
-					}, 100000)
+					}, 3000)
 					setPersons(persons.filter(person => person.id !== id))
 				})
 		}
