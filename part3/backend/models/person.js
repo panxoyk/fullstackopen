@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+mongoose.set('strictQuery', false)
+
 // NO GUARDAR PASSWORD EN GITHUB
 const url = process.env.MONGODB_URI
 
