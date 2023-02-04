@@ -12,7 +12,6 @@ const url = `mongodb+srv://Francisco:${password}@cluster0.xqzrlqv.mongodb.net/${
 
 mongoose.connect(url)
 
-
 const personSchema = new mongoose.Schema({
     name: String,
     number: String
