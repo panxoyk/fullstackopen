@@ -16,6 +16,11 @@ const App = () => {
     const [ error, setError ] = useState(null)
     const [ success, setSuccess ] = useState(null)
 
+    useEffect(async () => {
+        const initialBlogs = await blogService.getAll()
+        setBlogs(initialBlogs)
+    }, [])
+
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
 
