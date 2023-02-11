@@ -17,22 +17,21 @@ const App = () => {
     const [ success, setSuccess ] = useState(null)
 
     useEffect(() => {
-        blogService.getAll()
-            .fetch(initialBlogs => {
-                setBlogs(initialBlogs)
-            })        
-    }, [])
-
-    useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
 
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON)
             setUser(user)
             blogService.setToken(user.token)
+            getAllBlogs()
         }
     }, [])
 
+    const getAllBlogs = async () => {
+        const blogs = await blogService.getAll()
+        setBlogs(blogs)
+    }
+ 
     const handleLogIn = async (event) => {
         event.preventDefault()        
 
