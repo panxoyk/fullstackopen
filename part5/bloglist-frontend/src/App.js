@@ -16,9 +16,11 @@ const App = () => {
     const [ error, setError ] = useState(null)
     const [ success, setSuccess ] = useState(null)
 
-    useEffect(async () => {
-        const initialBlogs = await blogService.getAll()
-        setBlogs(initialBlogs)
+    useEffect(() => {
+        blogService.getAll()
+            .fetch(initialBlogs => {
+                setBlogs(initialBlogs)
+            })        
     }, [])
 
     useEffect(() => {
