@@ -16,11 +16,6 @@ const App = () => {
     const [ error, setError ] = useState(null)
     const [ success, setSuccess ] = useState(null)
 
-    useEffect(async () => {
-        const initialBlogs = await blogService.getAll()
-        setBlogs(initialBlogs)
-    }, [])
-
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
 
@@ -28,14 +23,16 @@ const App = () => {
             const user = JSON.parse(loggedUserJSON)
             setUser(user)
             blogService.setToken(user.token)
-            getAllBlogs()
         }
     }, [])
 
-    const getAllBlogs = async () => {
-        const blogs = await blogService.getAll()
-        setBlogs(blogs)
-    }
+    useEffect(() => {
+        blogService.getAll()
+            .then(initialBlogs => {
+                const sortedBlogs = initialBlogs.sort((a, b) => a.likes - b.likes).reverse()
+                setBlogs(sortedBlogs)
+            })
+    })
  
     const handleLogIn = async (event) => {
         event.preventDefault()        
@@ -59,7 +56,7 @@ const App = () => {
     const handleLogOut = (event) => {
         event.preventDefault()
 
-        window.localStorage.removeItem('loggedBloglistUser')
+        window.localStorage.clear()
         blogService.setToken(null)
         setUser(null)
     }
@@ -78,7 +75,7 @@ const App = () => {
                     ? <LoginForm handleLogIn={handleLogIn} username={username} setUsername={setUsername} password={password} setPassword={setPassword} />
                     : <div> 
                         <p> {user.name} logged in <button onClick={handleLogOut}> Log out </button> </p> 
-                        <Bloglist blogs={blogs} setBlogs={setBlogs} setError={setError} setSuccess={setSuccess} /> 
+                        <Bloglist user={user} blogs={blogs} setBlogs={setBlogs} setError={setError} setSuccess={setSuccess} /> 
                     </div>
                     
             }

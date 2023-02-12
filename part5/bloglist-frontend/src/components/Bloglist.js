@@ -3,32 +3,17 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
 import BlogForm from './BlogForm'
+import Blog from './Blog'
 
-const Bloglist = ({ blogs, setBlogs, setError, setSuccess }) => {
-    const [ newBlog, setNewBlog ] = useState({
-        title: '',
-        author: '',
-        url: '',
-    })
+const Bloglist = ({ user, blogs, setBlogs, setError, setSuccess }) => {
+    const [ visibility, setVisibility ] = useState(false)
 
-    const createBlog = async (event) => {
-        event.preventDefault()
-
-        const blogObject = {
-            title: newBlog.title,
-            author: newBlog.author,
-            url: newBlog.url,
-        }
-
+    const createBlog = async (blogObject) => {
         try {
             const createdBlog = await blogService.create(blogObject)
             setBlogs(blogs.concat(createdBlog))
-            setNewBlog({
-                title: '',
-                author: '',
-                url: '',
-            })
-            setSuccess(`A new blog ${newBlog.title} by ${newBlog.author} added`)
+            changeVisibility()
+            setSuccess(`A new blog ${blogObject.title} by ${blogObject.author} added`)
             setTimeout(() => {
                 setSuccess(null)
             }, 5000)
@@ -37,16 +22,57 @@ const Bloglist = ({ blogs, setBlogs, setError, setSuccess }) => {
             setTimeout(() => {
                 setError(null)
             }, 5000)
-            setBlogs(blogs.filter(blog => blog !== newBlog))
         }
     }
 
+    const likeBlog = async (blogId) => {
+        try {
+            const blog = blogs.find(blog => blog.id === blogId)
+            const blogObject = {
+                ...blog,
+                likes: blog.likes + 1
+            }
+            const updatedBlog = await blogService.update(blogId, blogObject)
+            setBlogs(blogs.map(blog => blog.id !== blogId ? blog : updatedBlog))
+        } catch (exception) {
+            setError(exception.response.data.error)
+            setTimeout(() => {
+                setError(null)
+            }, 5000)
+        }
+    }
+
+    const deleteBlog = async (blogId) => {
+        const blog = blogs.find(blog => blog.id === blogId)
+        if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+            try {
+                await blogService.remove(blogId) 
+            } catch (exception) {
+                setError(exception.response.data.error)
+                setTimeout(() => {
+                    setError(null)
+                }, 5000)
+            }
+        }        
+    }
+
+    const changeVisibility = () => setVisibility(!visibility)
+
     return (
         <div>
-            <BlogForm createBlog={createBlog} newBlog={newBlog} setNewBlog={setNewBlog} />
             {
-                blogs.map(blog =>
-                    <div key={blog.id}> <strong> {blog.title} </strong> {blog.author} </div>    
+                visibility === false
+                    ? <button onClick={changeVisibility}> Create new Blog </button>
+                    : <div>
+                        <BlogForm addBlog={createBlog} />
+                        <button onClick={changeVisibility}> Cancel </button>
+                    </div>
+            }
+            {
+                blogs.map((blog) => 
+                    <div className='blog' key={blog.id}> 
+                        <Blog blog={blog} likeBlog={likeBlog} removeBlog={deleteBlog} /> 
+                    </div>                   
                 )
             }
         </div>
