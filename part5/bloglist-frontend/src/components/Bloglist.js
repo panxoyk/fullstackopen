@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 import blogService from '../services/blogs'
 
 import BlogForm from './BlogForm'
 import Blog from './Blog'
 
-const Bloglist = ({ user, blogs, setBlogs, setError, setSuccess }) => {
+const Bloglist = ({ blogs, setBlogs, setError, setSuccess }) => {
     const [ visibility, setVisibility ] = useState(false)
 
     const createBlog = async (blogObject) => {
@@ -46,14 +47,14 @@ const Bloglist = ({ user, blogs, setBlogs, setError, setSuccess }) => {
         const blog = blogs.find(blog => blog.id === blogId)
         if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
             try {
-                await blogService.remove(blogId) 
+                await blogService.remove(blogId)
             } catch (exception) {
                 setError(exception.response.data.error)
                 setTimeout(() => {
                     setError(null)
                 }, 5000)
             }
-        }        
+        }
     }
 
     const changeVisibility = () => setVisibility(!visibility)
@@ -69,14 +70,21 @@ const Bloglist = ({ user, blogs, setBlogs, setError, setSuccess }) => {
                     </div>
             }
             {
-                blogs.map((blog) => 
-                    <div className='blog' key={blog.id}> 
-                        <Blog blog={blog} likeBlog={likeBlog} removeBlog={deleteBlog} /> 
-                    </div>                   
+                blogs.map((blog) =>
+                    <div className='blog' key={blog.id}>
+                        <Blog blog={blog} likeBlog={likeBlog} removeBlog={deleteBlog} />
+                    </div>
                 )
             }
         </div>
     )
+}
+
+Bloglist.propTypes = {
+    blogs: PropTypes.array.isRequired,
+    setBlogs: PropTypes.func.isRequired,
+    setError: PropTypes.func.isRequired,
+    setSuccess: PropTypes.func.isRequired,
 }
 
 export default Bloglist

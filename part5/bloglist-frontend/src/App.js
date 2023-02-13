@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
-import loginService from './services/login';
-import blogService from './services/blogs';
+import loginService from './services/login'
+import blogService from './services/blogs'
 
-import LoginForm from './components/LoginForm';
-import Bloglist from './components/Bloglist';
+import LoginForm from './components/LoginForm'
+import Bloglist from './components/Bloglist'
 
 const App = () => {
     const [ blogs, setBlogs ] = useState([])
@@ -12,7 +12,7 @@ const App = () => {
     const [ user, setUser ] = useState(null)
     const [ username, setUsername ] = useState('')
     const [ password, setPassword ] = useState('')
-    
+
     const [ error, setError ] = useState(null)
     const [ success, setSuccess ] = useState(null)
 
@@ -33,9 +33,9 @@ const App = () => {
                 setBlogs(sortedBlogs)
             })
     })
- 
+
     const handleLogIn = async (event) => {
-        event.preventDefault()        
+        event.preventDefault()
 
         try {
             const user = await loginService.login({ username, password })
@@ -43,7 +43,7 @@ const App = () => {
             blogService.setToken(user.token)
             setUser(user)
             setUsername('')
-            setPassword('')            
+            setPassword('')
         } catch (exception) {
             setError('wrong username or password')
             setPassword('')
@@ -73,14 +73,14 @@ const App = () => {
             {
                 user === null
                     ? <LoginForm handleLogIn={handleLogIn} username={username} setUsername={setUsername} password={password} setPassword={setPassword} />
-                    : <div> 
-                        <p> {user.name} logged in <button onClick={handleLogOut}> Log out </button> </p> 
-                        <Bloglist user={user} blogs={blogs} setBlogs={setBlogs} setError={setError} setSuccess={setSuccess} /> 
+                    : <div>
+                        <p> {user.name} logged in <button onClick={handleLogOut}> Log out </button> </p>
+                        <Bloglist user={user} blogs={blogs} setBlogs={setBlogs} setError={setError} setSuccess={setSuccess} />
                     </div>
-                    
+
             }
         </div>
     )
 }
 
-export default App;
+export default App
