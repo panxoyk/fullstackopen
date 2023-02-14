@@ -11,7 +11,7 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
     }
 
     return (
-        <div>
+        <div className='blog'>
             <div>
                 {blog.title} {blog.author} <button onClick={toggleVisibility}> {visible === true ? 'Hide' : 'View'} </button>
             </div>
@@ -35,8 +35,8 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
 
 Blog.propTypes = {
     blog: PropTypes.object.isRequired,
-    likeBlog: PropTypes.func.isRequired,
-    removeBlog: PropTypes.func.isRequired,
+    likeBlog: PropTypes.func,
+    removeBlog: PropTypes.func,
 }
 
 export default Blog
