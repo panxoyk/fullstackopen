@@ -4,14 +4,14 @@ import PropTypes from 'prop-types'
 const LoginForm = ({ handleLogIn, username, setUsername, password, setPassword }) => {
     return (
         <div>
-            <form onSubmit={handleLogIn}>
+            <form onSubmit={handleLogIn} className='loginForm'>
                 <div>
-                    username <input type='text' value={username} name='Username' onChange={event => setUsername(event.target.value)} />
+                    username <input id='username' type='text' value={username} name='Username' onChange={event => setUsername(event.target.value)} />
                 </div>
                 <div>
-                    password <input type='password' value={password} name='Password' onChange={event => setPassword(event.target.value)} />
+                    password <input id='password' type='password' value={password} name='Password' onChange={event => setPassword(event.target.value)} />
                 </div>
-                <button type='submit'> Log in </button>
+                <button id='login-button' type='submit'> Log in </button>
             </form>
         </div>
     )

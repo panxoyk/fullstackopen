@@ -11,24 +11,24 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
     }
 
     return (
-        <div className='blog'>
+        <div>
             <div>
                 {blog.title} {blog.author} <button onClick={toggleVisibility}> {visible === true ? 'Hide' : 'View'} </button>
+                {
+                    visible === true
+                        ? <div>
+                            <a href={blog.url}> {blog.url} </a>
+                            <div className='likes'> likes {blog.likes} <button onClick={() => likeBlog(blog.id)}> Like </button> </div>
+                            <div> {blog.user.name} </div>
+                            {
+                                user.username === blog.user.username
+                                    ? <button onClick={() => removeBlog(blog.id)}> Remove </button>
+                                    : null
+                            }
+                        </div>
+                        : null
+                }
             </div>
-            {
-                visible === true
-                    ? <div>
-                        <a href={blog.url}> {blog.url} </a>
-                        <div> likes {blog.likes} <button onClick={() => likeBlog(blog.id)}> Like </button> </div>
-                        <div> {blog.user.name} </div>
-                        {
-                            user.username === blog.user.username
-                                ? <button onClick={() => removeBlog(blog.id)}> Remove </button>
-                                : null
-                        }
-                    </div>
-                    : null
-            }
         </div>
     )
 }

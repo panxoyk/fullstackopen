@@ -27,12 +27,14 @@ const App = () => {
     }, [])
 
     useEffect(() => {
-        blogService.getAll()
-            .then(initialBlogs => {
-                const sortedBlogs = initialBlogs.sort((a, b) => a.likes - b.likes).reverse()
-                setBlogs(sortedBlogs)
-            })
-    })
+        getAllBlogs()
+    }, [])
+
+    const getAllBlogs = async () => {
+        const initialBlogs = await blogService.getAll()
+        const sortedBlogs = initialBlogs.sort((a, b) => a.likes - b.likes).reverse()
+        setBlogs(sortedBlogs)
+    }
 
     const handleLogIn = async (event) => {
         event.preventDefault()
@@ -75,7 +77,7 @@ const App = () => {
                     ? <LoginForm handleLogIn={handleLogIn} username={username} setUsername={setUsername} password={password} setPassword={setPassword} />
                     : <div>
                         <p> {user.name} logged in <button onClick={handleLogOut}> Log out </button> </p>
-                        <Bloglist user={user} blogs={blogs} setBlogs={setBlogs} setError={setError} setSuccess={setSuccess} />
+                        <Bloglist blogs={blogs} getAllBlogs={getAllBlogs} setError={setError} setSuccess={setSuccess} />
                     </div>
 
             }

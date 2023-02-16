@@ -6,13 +6,13 @@ import blogService from '../services/blogs'
 import BlogForm from './BlogForm'
 import Blog from './Blog'
 
-const Bloglist = ({ blogs, setBlogs, setError, setSuccess }) => {
+const Bloglist = ({ blogs, getAllBlogs, setError, setSuccess }) => {
     const [ visibility, setVisibility ] = useState(false)
 
     const createBlog = async (blogObject) => {
         try {
-            const createdBlog = await blogService.create(blogObject)
-            setBlogs(blogs.concat(createdBlog))
+            await blogService.create(blogObject)
+            getAllBlogs()
             changeVisibility()
             setSuccess(`A new blog ${blogObject.title} by ${blogObject.author} added`)
             setTimeout(() => {
@@ -33,8 +33,8 @@ const Bloglist = ({ blogs, setBlogs, setError, setSuccess }) => {
                 ...blog,
                 likes: blog.likes + 1
             }
-            const updatedBlog = await blogService.update(blogId, blogObject)
-            setBlogs(blogs.map(blog => blog.id !== blogId ? blog : updatedBlog))
+            await blogService.update(blogId, blogObject)
+            getAllBlogs()
         } catch (exception) {
             setError(exception.response.data.error)
             setTimeout(() => {
@@ -48,6 +48,7 @@ const Bloglist = ({ blogs, setBlogs, setError, setSuccess }) => {
         if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
             try {
                 await blogService.remove(blogId)
+                getAllBlogs()
             } catch (exception) {
                 setError(exception.response.data.error)
                 setTimeout(() => {
@@ -63,7 +64,7 @@ const Bloglist = ({ blogs, setBlogs, setError, setSuccess }) => {
         <div>
             {
                 visibility === false
-                    ? <button onClick={changeVisibility}> Create new Blog </button>
+                    ? <button id='newBlog-button' onClick={changeVisibility}> Create new Blog </button>
                     : <div>
                         <BlogForm addBlog={createBlog} />
                         <button onClick={changeVisibility}> Cancel </button>
