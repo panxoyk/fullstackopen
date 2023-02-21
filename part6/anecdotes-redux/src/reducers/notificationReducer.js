@@ -33,4 +33,18 @@ const notificationSlice = createSlice({
 })
 
 export const { successNotify, errorNotify, nullNotify } = notificationSlice.actions
+
+export const setNotify = (message, seconds, error = false) => {
+    return async (dispatch) => {
+        if (error) {
+            dispatch(errorNotify(message))
+        } else {
+            dispatch(successNotify(message))
+        }
+        setTimeout(() => {
+            dispatch(nullNotify())
+        }, (seconds * 1000))
+    }
+}
+
 export default notificationSlice.reducer
